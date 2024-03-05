@@ -1,9 +1,10 @@
 <%- include('./partials/head') %>
 
 <main>
-    <% posts.forEach(post=> %>
-    <p>post.title.rendered</p>
-    <% ) %>
+    <% posts.forEach(post => { %>
+        <h2><%= post.title.rendered %></h2>
+        <p><%= post.content.rendered %></p>
+    <% }); %>
 </main>
 
 <%- include('./partials/foot') %>

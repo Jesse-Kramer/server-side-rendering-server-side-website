@@ -1,40 +1,72 @@
-// Importeer het npm pakket express uit de node_modules map
-import express from 'express'
+// Import the express npm package from the node_modules directory
+import express from 'express';
 
-// Importeer de zelfgemaakte functie fetchJson uit de ./helpers map
-import fetchJson from './helpers/fetch-json.js'
+// Import the fetchJson function from the ./helpers directory
+import fetchJson from './helpers/fetch-json.js';
 
-// Stel het basis endpoint in
-const apiUrl = 'https://redpers.nl/wp-json/wp/v2'
+// Set the base API endpoint
+const apiUrl = 'https://redpers.nl/wp-json/wp/v2';
 
-// Maak een nieuwe express app aan
-const app = express()
+// Create a new express app
+const app = express();
 
-// Stel ejs in als template engine
-app.set('view engine', 'ejs')
+// Set ejs as the template engine
+app.set('view engine', 'ejs');
 
-// Zorg dat werken met request data makkelijker wordt 
-app.use(express.urlencoded({extended: true}))
+// Make working with request data easier
+app.use(express.urlencoded({ extended: true }));
 
-// Stel de map met ejs templates in
-app.set('views', './views')
+// Set the directory for ejs templates
+app.set('views', './views');
 
-// Gebruik de map 'public' voor statische resources, zoals stylesheets, afbeeldingen en client-side JavaScript
-app.use(express.static('public'))
+// Use the 'public' directory for static resources
+app.use(express.static('public'));
 
-// Maak een GET route voor de index
+// GET route for the index page
 app.get('/', function (request, response) {
-    // Haal alle personen uit de WHOIS API op
-    var query = request.query;
+    // Fetch posts from the API
+    const url = `${apiUrl}/posts`;
   
-    var url = apiUrl + '/posts';
-  
-  
-    fetchJson(url).then((apiData) => {
-      // apiData bevat gegevens van alle personen uit alle squads
-      // Je zou dat hier kunnen filteren, sorteren, of zelfs aanpassen, voordat je het doorgeeft aan de view
-  
-      // Render index.ejs uit de views map en geef de opgehaalde data mee als variabele, genaamd persons
-      response.render('index', { posts: apiData.data })
+    fetchJson(url)
+    .then((apiData) => {
+        // Render index.ejs and pass the fetched data as 'posts' variable
+        response.render('index', { posts: apiData });
     })
-  })
+    .catch((error) => {
+        // Handle error if fetching data fails
+        console.error('Error fetching data:', error);
+        response.status(500).send('Error fetching data');
+    });
+});
+
+// POST route for the index page
+app.post('/', function (request, response) {
+    // Currently not handling POST data, redirect to the homepage
+    response.redirect(303, '/');
+});
+
+// GET route for detail page with request parameter id
+app.get('/post/:id', function (request, response) {
+    // Fetch the post with the given id from the API
+    const postId = request.params.id;
+  
+    fetchJson(`${apiUrl}/posts/${postId}`)
+    .then((apiData) => {
+        // Render post.ejs and pass the fetched data as 'post' variable
+        response.render('post', { post: apiData });
+    })
+    .catch((error) => {
+        // Handle error if fetching data fails
+        console.error('Error fetching data:', error);
+        response.status(404).send('Post not found');
+    });
+});
+
+// Set the port number for express to listen on
+app.set('port', process.env.PORT || 8000);
+
+// Start express and listen on the specified port
+app.listen(app.get('port'), function () {
+    // Log a message to the console with the port number
+    console.log(`Application started on http://localhost:${app.get('port')}`);
+});
