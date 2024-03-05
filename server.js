@@ -24,19 +24,21 @@ app.use(express.static('public'));
 
 // GET route for the index page
 app.get('/', function (request, response) {
-    // Fetch posts from the API
-    const url = `${apiUrl}/posts`;
-  
-    fetchJson(url)
-    .then((apiData) => {
-        // Render index.ejs and pass the fetched data as 'posts' variable
-        response.render('index', { posts: apiData });
-    })
-    .catch((error) => {
-        // Handle error if fetching data fails
-        console.error('Error fetching data:', error);
-        response.status(500).send('Error fetching data');
-    });
+  // Fetch posts from the API
+  const postsUrl = `${apiUrl}/posts`;
+  const usersUrl = `${apiUrl}/users`;
+
+  // Fetch posts and users concurrently
+  Promise.all([fetchJson(postsUrl), fetchJson(usersUrl)])
+  .then(([postsData, usersData]) => {
+      // Render index.ejs and pass the fetched data as 'posts' and 'users' variables
+      response.render('index', { posts: postsData, users: usersData });
+  })
+  .catch((error) => {
+      // Handle error if fetching data fails
+      console.error('Error fetching data:', error);
+      response.status(500).send('Error fetching data');
+  });
 });
 
 // POST route for the index page
