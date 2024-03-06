@@ -24,21 +24,22 @@ app.use(express.static('public'));
 
 // GET route for the index page
 app.get('/', function (request, response) {
-  // Fetch posts from the API
-  const postsUrl = `${apiUrl}/posts`;
-  const usersUrl = `${apiUrl}/users`;
+    // Fetch posts from the API
+    const categoriesURL = `${apiUrl}/categories`;
+    const postsUrl = `${apiUrl}/posts`;
+    const usersUrl = `${apiUrl}/users`;
 
-  // Fetch posts and users concurrently
-  Promise.all([fetchJson(postsUrl), fetchJson(usersUrl)])
-  .then(([postsData, usersData]) => {
-      // Render index.ejs and pass the fetched data as 'posts' and 'users' variables
-      response.render('index', { posts: postsData, users: usersData });
-  })
-  .catch((error) => {
-      // Handle error if fetching data fails
-      console.error('Error fetching data:', error);
-      response.status(500).send('Error fetching data');
-  });
+    // Fetch posts and users concurrently
+    Promise.all([fetchJson(categoriesURL), fetchJson(postsUrl), fetchJson(usersUrl)])
+        .then(([categoriesData, postsData, usersData]) => {
+            // Render index.ejs and pass the fetched data as 'posts' and 'users' variables
+            response.render('index', { categories: categoriesData, posts: postsData, users: usersData });
+        })
+        .catch((error) => {
+            // Handle error if fetching data fails
+            console.error('Error fetching data:', error);
+            response.status(500).send('Error fetching data');
+        });
 });
 
 // POST route for the index page
@@ -51,17 +52,17 @@ app.post('/', function (request, response) {
 app.get('/post/:id', function (request, response) {
     // Fetch the post with the given id from the API
     const postId = request.params.id;
-  
+
     fetchJson(`${apiUrl}/posts/${postId}`)
-    .then((apiData) => {
-        // Render post.ejs and pass the fetched data as 'post' variable
-        response.render('post', { post: apiData });
-    })
-    .catch((error) => {
-        // Handle error if fetching data fails
-        console.error('Error fetching data:', error);
-        response.status(404).send('Post not found');
-    });
+        .then((apiData) => {
+            // Render post.ejs and pass the fetched data as 'post' variable
+            response.render('post', { post: apiData });
+        })
+        .catch((error) => {
+            // Handle error if fetching data fails
+            console.error('Error fetching data:', error);
+            response.status(404).send('Post not found');
+        });
 });
 
 // Set the port number for express to listen on
