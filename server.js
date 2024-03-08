@@ -42,26 +42,68 @@ app.get('/', function (request, response) {
         });
 });
 
-// POST route for the index page
-app.post('/', function (request, response) {
-    // Currently not handling POST data, redirect to the homepage
-    response.redirect(303, '/');
-});
+// GET route for displaying all posts in a category
+app.get('/:categorySlug', function (request, response) {
+    const categorySlug = request.params.categorySlug;
 
-// GET route for detail page with request parameter id
-app.get('/post/:id', function (request, response) {
-    // Fetch the post with the given id from the API
-    const postId = request.params.id;
+    fetchJson(`${apiUrl}/categories?slug=${categorySlug}`)
+        .then((categoriesData) => {
+            if (categoriesData.length === 0) {
+                // If no category found, return 404
+                response.status(404).send('Category not found');
+                return;
+            }
 
-    fetchJson(`${apiUrl}/posts/${postId}`)
-        .then((apiData) => {
-            // Render post.ejs and pass the fetched data as 'post' variable
-            response.render('post', { post: apiData });
+            const categoryId = categoriesData[0].id;
+
+            // Fetch posts from the API based on category id
+            fetchJson(`${apiUrl}/posts?categories=${categoryId}`)
+                .then((postsData) => {
+                    // Render category.ejs and pass the fetched data as 'category' and 'posts' variables
+                    response.render('category', { category: categoriesData[0], posts: postsData });
+                })
+                .catch((error) => {
+                    // Handle error if fetching data fails
+                    console.error('Error fetching data:', error);
+                    response.status(500).send('Error fetching data');
+                });
         })
         .catch((error) => {
             // Handle error if fetching data fails
             console.error('Error fetching data:', error);
-            response.status(404).send('Post not found');
+            response.status(500).send('Error fetching data');
+        });
+});
+
+// GET route for detail page with request parameters categorySlug and postId
+app.get('/:categorySlug/:postId', function (request, response) {
+    const categorySlug = request.params.categorySlug;
+    const postId = request.params.postId;
+
+    fetchJson(`${apiUrl}/categories?slug=${categorySlug}`)
+        .then((categoriesData) => {
+            if (categoriesData.length === 0) {
+                // If no category found, return 404
+                response.status(404).send('Category not found');
+                return;
+            }
+
+            // Fetch the post with the given id from the API
+            fetchJson(`${apiUrl}/posts/${postId}`)
+                .then((apiData) => {
+                    // Render post.ejs and pass the fetched data as 'post' variable
+                    response.render('post', { post: apiData });
+                })
+                .catch((error) => {
+                    // Handle error if fetching data fails
+                    console.error('Error fetching data:', error);
+                    response.status(404).send('Post not found');
+                });
+        })
+        .catch((error) => {
+            // Handle error if fetching data fails
+            console.error('Error fetching data:', error);
+            response.status(500).send('Error fetching data');
         });
 });
 
