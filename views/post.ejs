@@ -18,7 +18,7 @@
                 <span>Category: <%= post.categories %></span>
                 <!-- Categorie moet opgehaald worden, eerst data uit de categorie halen (naam)-->
                 <span>Author: <%= post.yoast_head_json.author %></span>
-                <span>Reading time:</span> <!-- Hier moet nog naar gekeken worden.-->
+                <span>Reading time: <%= post["Geschatte leestijd"] %></span>
                 <p>
                     <% // Assuming your JSON object is stored in a variable called post const
                         renderedContent=post.content.rendered; // Remove HTML tags let
