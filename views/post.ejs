@@ -3,41 +3,35 @@
     <main>
         <section>
             <h2>Posts</h2>
-                <h3>
-                    <% renderedContent=post.title.rendered ; post_title=renderedContent.replace(/(<([^>]+)>)/gi,
-                        "");
+            <h3>
+                <% let post_title=post.title.rendered.replace(/(&lt;([^&gt;]+)&gt;)/gi, "" );
+                    post_title=post_title.replace(/&#[0-9]+;/g, function(entity) { return
+                    String.fromCharCode(entity.substring(2, entity.length - 1)); }); %>
+                    <%= post_title %>
+            </h3>
 
-                        post_title = post_title.replace(/&#[0-9]+;/g, function(entity) {
-                        return String.fromCharCode(entity.substring(2, entity.length - 1));
-                        });
+            <span>Categories:
+                <% post.categories.forEach(function(categoryId, index) { %>
+                    <% const category=categories.find(category=> category.id === categoryId); %>
+                        <% if (category) { %>
+                            <%= index !==0 ? ' | ' : '' %>
+                                <%= category.name %>
+                                    <% } %>
+                                        <% }); %>
+            </span>
 
-                        %>
-                        <%= post_title %>
-                </h3>
-
-                <span>Category: <%= post.categories %></span>
-                <!-- Categorie moet opgehaald worden, eerst data uit de categorie halen (naam)-->
-                <span>Author: <%= post.yoast_head_json.author %></span>
-                <span>Reading time: <%= post["Geschatte leestijd"] %></span>
-                <p>
-                    <% // Assuming your JSON object is stored in a variable called post const
-                        renderedContent=post.content.rendered; // Remove HTML tags let
-                        textWithoutHTML=renderedContent.replace(/(<([^>]+)>)/gi, "");
-
-                        // Decode HTML entities
-                        textWithoutHTML = textWithoutHTML.replace(/&#[0-9]+;/g, function(entity) {
-                        return String.fromCharCode(entity.substring(2, entity.length - 1));
-                        });
-
-                        // Replace &nbsp; with regular space
-                        textWithoutHTML = textWithoutHTML.replace(/&nbsp;/g, ' ');
-
-                        // Output the decoded text
-                        %>
-                        <%= textWithoutHTML %>
-                </p>
-                <h3>image</h3>
-                <img src="<%= post.jetpack_featured_media_url %>" alt="">
+            <span>Author: <%= post.yoast_head_json.author %></span>
+            <span>Reading time: <%= post.yoast_head_json.twitter_misc["Geschatte leestijd"] %></span>
+            <p>
+                <% let renderedContent=post.content.rendered; let
+                    textWithoutHTML=renderedContent.replace(/(&lt;([^&gt;]+)&gt;)/gi, "" );
+                    textWithoutHTML=textWithoutHTML.replace(/&#[0-9]+;/g, function(entity) { return
+                    String.fromCharCode(entity.substring(2, entity.length - 1)); });
+                    textWithoutHTML=textWithoutHTML.replace(/&nbsp;/g, ' ' ); %>
+                    <%= textWithoutHTML %>
+            </p>
+            <h3>image</h3>
+            <img src="<%= post.jetpack_featured_media_url %>" alt="">
         </section>
     </main>
 

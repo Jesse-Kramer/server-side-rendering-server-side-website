@@ -25,7 +25,7 @@ app.use(express.static('public'));
 // GET route for the index page
 app.get('/', function (request, response) {
     // Fetch posts from the API
-    const categoriesURL = `${apiUrl}/categories?per_page=50`;
+    const categoriesURL = `${apiUrl}/categories?per_page=100`;
     const postsUrl = `${apiUrl}/posts?per_page=100`;
     const usersUrl = `${apiUrl}/users`;
 
@@ -92,7 +92,7 @@ app.get('/:categorySlug/:postId', function (request, response) {
             fetchJson(`${apiUrl}/posts/${postId}`)
                 .then((apiData) => {
                     // Render post.ejs and pass the fetched data as 'post' variable
-                    response.render('post', { post: apiData });
+                    response.render('post', { post: apiData, categories: categoriesData }); // Pass categoriesData here
                 })
                 .catch((error) => {
                     // Handle error if fetching data fails
