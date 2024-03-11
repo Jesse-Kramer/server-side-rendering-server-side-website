@@ -1,6 +1,9 @@
 // Import the express npm package from the node_modules directory
 import express from 'express';
 
+// Import the dom parser npm package from the node_modules directory
+import { DOMParser, XMLSerializer } from '@xmldom/xmldom'
+
 // Import the fetchJson function from the ./helpers directory
 import fetchJson from './helpers/fetch-json.js';
 
@@ -22,6 +25,50 @@ app.set('views', './views');
 // Use the 'public' directory for static resources
 app.use(express.static('public'));
 
+// Function with domparser
+function cleanTextContent(htmlString) {
+    // Create a new DOMParser instance
+    const parser = new DOMParser();
+
+    // Parse the HTML string into a DOM tree
+    const dom = parser.parseFromString(htmlString, 'text/html');
+
+    // Function to traverse the DOM tree and extract text content
+    function traverse(node) {
+        // Initialize an empty string to hold the text content
+        let textContent = '';
+
+        // Check if the current node is a text node
+        if (node.nodeType === node.TEXT_NODE) {
+            // Append the text content of the current node
+            textContent += node.nodeValue;
+        }
+
+        // Traverse child nodes recursively
+        if (node.childNodes) {
+            for (let i = 0; i < node.childNodes.length; i++) {
+                textContent += traverse(node.childNodes[i]);
+            }
+        }
+
+        return textContent;
+    }
+
+    // Start traversing the DOM tree from the document node
+    let textContent = traverse(dom);
+
+    // Decode HTML entities
+    textContent = textContent.replace(/&amp;/g, '&')
+                            .replace(/&lt;/g, '<')
+                            .replace(/&gt;/g, '>')
+                            .replace(/&quot;/g, '"')
+                            .replace(/&#039;/g, "'")
+                            .replace(/&#[0-9]+;/g, (match) => String.fromCharCode(match.substring(2, match.length - 1)))
+                            .replace(/\s+/g, ' ');
+
+    return textContent.trim();
+}
+
 // GET route for the index page
 app.get('/', function (request, response) {
     // Fetch posts from the API
@@ -32,6 +79,12 @@ app.get('/', function (request, response) {
     // Fetch posts and users concurrently
     Promise.all([fetchJson(categoriesURL), fetchJson(postsUrl), fetchJson(usersUrl)])
         .then(([categoriesData, postsData, usersData]) => {
+            
+            postsData.forEach(postData => {
+
+                postData.title.rendered = cleanTextContent(postData.title.rendered);
+                // postData.content.rendered = cleanTextContent(postData.content.rendered);
+            });
             // Render index.ejs and pass the fetched data as 'posts' and 'users' variables
             response.render('index', { categories: categoriesData, posts: postsData, users: usersData });
         })
@@ -96,8 +149,7 @@ app.get('/:categorySlug/:postSlug', function (request, response) {
                         response.status(404).send('Post not found');
                         return;
                     }
-                    
-                    // Render post.ejs and pass the fetched data as 'post' variable
+
                     response.render('post', { post: postsData[0], categories: categoriesData });
                 })
                 .catch((error) => {
