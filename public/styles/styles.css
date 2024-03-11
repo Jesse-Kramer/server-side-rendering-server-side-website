@@ -1,0 +1,54 @@
+/* Articles (Home) */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted for mobile */
+    grid-gap: 10px; /* Gap between grid items */
+}
+
+/* Style for each article */
+.article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+/* Image style */
+.article img {
+    width: 100%;
+    max-width: 100%;
+    height: 200px; /* Fixed height for images */
+    object-fit: cover; /* Maintain aspect ratio and crop if necessary */
+}
+
+/* Title style */
+.article h3 {
+    margin: 10px 0;
+}
+
+/* Author and reading time style */
+.article span {
+    font-size: 14px;
+}
+
+.article-link {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit text color */
+}
+
+
+/* Media query for larger screens */
+@media screen and (min-width: 600px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* Show two articles per row on screens larger than 600px */
+    }
+}
+
+/* Media query for even larger screens */
+@media screen and (min-width: 900px) {
+    .grid-container {
+        grid-template-columns: repeat(4, 1fr); /* Show four articles per row on screens larger than 900px */
+    }
+}
