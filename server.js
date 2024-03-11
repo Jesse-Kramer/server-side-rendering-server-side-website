@@ -75,10 +75,10 @@ app.get('/:categorySlug', function (request, response) {
         });
 });
 
-// GET route for detail page with request parameters categorySlug and postId
-app.get('/:categorySlug/:postId', function (request, response) {
+// GET route for detail page with request parameters categorySlug and postSlug
+app.get('/:categorySlug/:postSlug', function (request, response) {
     const categorySlug = request.params.categorySlug;
-    const postId = request.params.postId;
+    const postSlug = request.params.postSlug;
 
     fetchJson(`${apiUrl}/categories?slug=${categorySlug}`)
         .then((categoriesData) => {
@@ -88,11 +88,17 @@ app.get('/:categorySlug/:postId', function (request, response) {
                 return;
             }
 
-            // Fetch the post with the given id from the API
-            fetchJson(`${apiUrl}/posts/${postId}`)
-                .then((apiData) => {
+            // Fetch the post with the given slug from the API
+            fetchJson(`${apiUrl}/posts?slug=${postSlug}`)
+                .then((postsData) => {
+                    if (postsData.length === 0) {
+                        // If no post found, return 404
+                        response.status(404).send('Post not found');
+                        return;
+                    }
+                    
                     // Render post.ejs and pass the fetched data as 'post' variable
-                    response.render('post', { post: apiData, categories: categoriesData }); // Pass categoriesData here
+                    response.render('post', { post: postsData[0], categories: categoriesData });
                 })
                 .catch((error) => {
                     // Handle error if fetching data fails

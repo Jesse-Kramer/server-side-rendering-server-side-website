@@ -5,15 +5,7 @@
         <ul>
             <% posts.forEach(post => { %>
                 <li>
-                    <a href="/<%= category.slug %>/<%= post.id %>">                <% renderedContent=post.title.rendered ; post_title=renderedContent.replace(/(<([^>]+)>)/gi,
-                        "");
-        
-                        post_title = post_title.replace(/&#[0-9]+;/g, function(entity) {
-                        return String.fromCharCode(entity.substring(2, entity.length - 1));
-                        });
-        
-                        %>
-                        <%= post_title %></a>
+                    <a href="/<%= category.slug %>/<%= post.slug %>"><%= post.title.rendered %></a>
                 </li>
             <% }); %>
         </ul>

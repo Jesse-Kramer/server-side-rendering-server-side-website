@@ -22,7 +22,7 @@
                     <% if (index === 0) { %>
                         <% const category = categories.find(category => category.id === categoryId); %>
                         <% if (category) { %>
-                            <a href="<%= category.slug %>/<%= post.id %>" class="article-link"> <!-- Not working correctly-->
+                            <a href="<%= category.slug %>/<%= post.slug %>" class="article-link"> <!-- Not working correctly-->
                         <% } %>
                     <% } %>
                 <% }); %>
