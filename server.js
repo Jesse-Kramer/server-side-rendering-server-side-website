@@ -25,8 +25,8 @@ app.use(express.static('public'));
 // GET route for the index page
 app.get('/', function (request, response) {
     // Fetch posts from the API
-    const categoriesURL = `${apiUrl}/categories`;
-    const postsUrl = `${apiUrl}/posts`;
+    const categoriesURL = `${apiUrl}/categories?per_page=50`;
+    const postsUrl = `${apiUrl}/posts?per_page=100`;
     const usersUrl = `${apiUrl}/users`;
 
     // Fetch posts and users concurrently

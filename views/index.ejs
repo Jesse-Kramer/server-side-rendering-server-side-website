@@ -3,11 +3,15 @@
     <main>
         <section>
             <h2>Categories</h2>
-            <% categories.forEach(category=> { %>
-                <h3>
-                    <%= category.name %>
-                </h3>
-                <% }); %>
+            <ul>
+                <% categories.forEach(category=> { %>
+                    <li>
+                        <a href="/<%= category.slug %>">
+                            <%= category.name %>
+                        </a>
+                    </li>
+                    <% }); %>
+            </ul>
         </section>
 
         <section>
