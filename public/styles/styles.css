@@ -1,3 +1,10 @@
+body {
+    position: relative;
+    max-width: 1024px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 /* Articles (Home) */
 .grid-container {
     display: grid;
@@ -87,7 +94,7 @@
     padding: 0;
 }
 
-main {
+.single-post {
     display: flex;
     flex-direction: column;
 
@@ -95,12 +102,6 @@ main {
     margin: 5%;
     margin-top: calc(-7.5%);
 }
-
-.post {
-    margin: 10%;
-    width: 100%;
-}
-
 
 h2 {
     font-size: 2em;
