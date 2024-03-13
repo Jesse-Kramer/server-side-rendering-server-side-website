@@ -32,41 +32,11 @@ function cleanTextContent(htmlString) {
 
     // Parse the HTML string into a DOM tree
     const dom = parser.parseFromString(htmlString, 'text/html');
+    // console.log(dom.childNodes)
 
-    // Function to traverse the DOM tree and extract text content
-    function traverse(node) {
-        // Initialize an empty string to hold the text content
-        let textContent = '';
-
-        // Check if the current node is a text node
-        if (node.nodeType === node.TEXT_NODE) {
-            // Append the text content of the current node
-            textContent += node.nodeValue;
-        }
-
-        // Traverse child nodes recursively
-        if (node.childNodes) {
-            for (let i = 0; i < node.childNodes.length; i++) {
-                textContent += traverse(node.childNodes[i]);
-            }
-        }
-
-        return textContent;
-    }
-
-    // Start traversing the DOM tree from the document node
-    let textContent = traverse(dom);
-
-    // Decode HTML entities
-    textContent = textContent.replace(/&amp;/g, '&')
-                            .replace(/&lt;/g, '<')
-                            .replace(/&gt;/g, '>')
-                            .replace(/&quot;/g, '"')
-                            .replace(/&#039;/g, "'")
-                            .replace(/&#[0-9]+;/g, (match) => String.fromCharCode(match.substring(2, match.length - 1)))
-                            .replace(/\s+/g, ' ');
-
-    return textContent.trim();
+    Array.from(dom.childNodes).forEach(function(node) {
+        console.log(node.textContent);
+    });
 }
 
 // GET route for the index page
@@ -79,12 +49,6 @@ app.get('/', function (request, response) {
     // Fetch posts and users concurrently
     Promise.all([fetchJson(categoriesURL), fetchJson(postsUrl), fetchJson(usersUrl)])
         .then(([categoriesData, postsData, usersData]) => {
-            
-            postsData.forEach(postData => {
-
-                postData.title.rendered = cleanTextContent(postData.title.rendered);
-                // postData.content.rendered = cleanTextContent(postData.content.rendered);
-            });
             // Render index.ejs and pass the fetched data as 'posts' and 'users' variables
             response.render('index', { categories: categoriesData, posts: postsData, users: usersData });
         })
@@ -149,6 +113,10 @@ app.get('/:categorySlug/:postSlug', function (request, response) {
                         response.status(404).send('Post not found');
                         return;
                     }
+
+                    postsData.forEach(postData => {
+                        postData.content.rendered = cleanTextContent(postData.content.rendered); // Haal de content door de parser
+                    });
 
                     response.render('post', { post: postsData[0], categories: categoriesData });
                 })

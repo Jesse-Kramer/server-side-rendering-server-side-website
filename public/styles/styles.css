@@ -78,3 +78,35 @@
     grid-column-end: span 3; /* Span two columns */
 }
 }
+
+/* Nav bar */
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Nav styling */
+
+nav {
+    margin: 5%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    width: 40%;
+}
+
+@media (min-width: 45em) {
+    .logo {
+        width: 20%;
+    }
+}
+
+@media (min-width: 75em) {
+
+    .logo {
+        width: calc(20% - 5%)
+    }
+
+}

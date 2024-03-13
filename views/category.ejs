@@ -5,7 +5,7 @@
         <ul>
             <% posts.forEach(post => { %>
                 <li>
-                    <a href="/<%= category.slug %>/<%= post.slug %>"><%= post.title.rendered %></a>
+                    <a href="/<%= category.slug %>/<%= post.slug %>"><%- post.title.rendered %></a>
                 </li>
             <% }); %>
         </ul>

@@ -29,15 +29,7 @@
                     <article class="article">
                         <img src="<%= post.jetpack_featured_media_url %>" alt="Post Image">
                         <h3>
-                            <% 
-                            // Processing post title to remove HTML tags and entities
-                            var renderedContent = post.title.rendered; 
-                            var post_title = renderedContent.replace(/(<([^>]+)>)/gi, "");
-                            post_title = post_title.replace(/&#[0-9]+;/g, function(entity) {
-                                return String.fromCharCode(entity.substring(2, entity.length - 1));
-                            });
-                            %>
-                            <%= post_title %>
+                            <%- post.title.rendered%>
                         </h3>
                         <span><b><%= post.yoast_head_json.author %></b> | <%= post.yoast_head_json.twitter_misc["Geschatte leestijd"] %></span>
                     </article>
