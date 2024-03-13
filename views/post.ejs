@@ -2,13 +2,14 @@
 
     <main>
         <section class="single-post">
+            <img src="<%= post.jetpack_featured_media_url %>" class="post-img">
             <h2>
                 <span class="category">
                     <% post.categories.forEach(function(categoryId, index) { %>
                         <% const category=categories.find(category=> category.id === categoryId); %>
                             <% if (category) { %>
                             <%= index !==0 ? ' | ' : '' %>
-                            <%- category.name %>
+                            <a href="../<%- category.slug %>" class="category"><%- category.name %></a>
                         <% } %>
                     <% }); %>
                 </span>
@@ -20,9 +21,9 @@
                 <li class="author">
                     <%= post.yoast_head_json.author %>
                 </li>
-                <li class="date">
+                <!-- <li class="date">
                     <%= post.date_gmt %>
-                </li>
+                </li> -->
                 <li class="read-time">
                     <%= post.yoast_head_json.twitter_misc["Geschatte leestijd"] %>
                 </li>
@@ -30,7 +31,7 @@
             <p>
                 <%- post.content.rendered %>
             </p>
-            <img src="<%= post.jetpack_featured_media_url %>" class="post-img">
+
         </section>
     </main>
 
