@@ -1,9 +1,6 @@
 // Import the express npm package from the node_modules directory
 import express from 'express';
 
-// Import the dom parser npm package from the node_modules directory
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom'
-
 // Import the fetchJson function from the ./helpers directory
 import fetchJson from './helpers/fetch-json.js';
 
@@ -28,7 +25,7 @@ app.use(express.static('public'));
 // GET route for the index page
 app.get('/', function (request, response) {
     // Fetch posts from the API
-    const categoriesURL = `${apiUrl}/categories?per_page=10`;
+    const categoriesURL = `${apiUrl}/categories?per_page=100`;
     const postsUrl = `${apiUrl}/posts?per_page=10`;
     const usersUrl = `${apiUrl}/users`;
 
