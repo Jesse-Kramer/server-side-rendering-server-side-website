@@ -25,25 +25,11 @@ app.set('views', './views');
 // Use the 'public' directory for static resources
 app.use(express.static('public'));
 
-// Function with domparser
-function cleanTextContent(htmlString) {
-    // Create a new DOMParser instance
-    const parser = new DOMParser();
-
-    // Parse the HTML string into a DOM tree
-    const dom = parser.parseFromString(htmlString, 'text/html');
-    // console.log(dom.childNodes)
-
-    Array.from(dom.childNodes).forEach(function(node) {
-        console.log(node.textContent);
-    });
-}
-
 // GET route for the index page
 app.get('/', function (request, response) {
     // Fetch posts from the API
-    const categoriesURL = `${apiUrl}/categories?per_page=100`;
-    const postsUrl = `${apiUrl}/posts?per_page=100`;
+    const categoriesURL = `${apiUrl}/categories?per_page=10`;
+    const postsUrl = `${apiUrl}/posts?per_page=10`;
     const usersUrl = `${apiUrl}/users`;
 
     // Fetch posts and users concurrently
@@ -113,10 +99,6 @@ app.get('/:categorySlug/:postSlug', function (request, response) {
                         response.status(404).send('Post not found');
                         return;
                     }
-
-                    postsData.forEach(postData => {
-                        postData.content.rendered = cleanTextContent(postData.content.rendered); // Haal de content door de parser
-                    });
 
                     response.render('post', { post: postsData[0], categories: categoriesData });
                 })

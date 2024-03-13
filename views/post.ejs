@@ -2,29 +2,35 @@
 
     <main>
         <section>
-            <h2>Posts</h2>
-            <h3>
-                <%- post.title.rendered %>
-
-            </h3>
-
-            <span>Categories:
-                <% post.categories.forEach(function(categoryId, index) { %>
-                    <% const category=categories.find(category=> category.id === categoryId); %>
-                        <% if (category) { %>
+            <h2>
+                <span class="category">
+                    <% post.categories.forEach(function(categoryId, index) { %>
+                        <% const category=categories.find(category=> category.id === categoryId); %>
+                            <% if (category) { %>
                             <%= index !==0 ? ' | ' : '' %>
-                                <%= category.name %>
-                                    <% } %>
-                                        <% }); %>
-            </span>
+                            <%- category.name %>
+                        <% } %>
+                    <% }); %>
+                </span>
+                |
+                <%- post.title.rendered %>
+            </h2>
 
-            <span>Author: <%= post.yoast_head_json.author %></span>
-            <span>Reading time: <%= post.yoast_head_json.twitter_misc["Geschatte leestijd"] %></span>
+            <ul>
+                <li class="author">
+                    <%= post.yoast_head_json.author %>
+                </li>
+                <li class="date">
+                    <%= post.date_gmt %>
+                </li>
+                <li class="read-time">
+                    <%= post.yoast_head_json.twitter_misc["Geschatte leestijd"] %>
+                </li>
+            </ul>
             <p>
-                <%= post.content.rendered %>
+                <%- post.content.rendered %>
             </p>
-            <h3>image</h3>
-            <img src="<%= post.jetpack_featured_media_url %>" alt="">
+            <img src="<%= post.jetpack_featured_media_url %>" class="post-img">
         </section>
     </main>
 
